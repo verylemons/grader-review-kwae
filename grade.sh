@@ -9,8 +9,34 @@ git clone $1 student-submission
 echo 'Finished cloning'
 
 
-# Draw a picture/take notes on the directory structure that's set up after
-# getting to this point
+if test -f "student-submission/ListExamples.java"; then
+echo ""
+echo "Correct File Submitted"
+echo ""
+else
+echo "Incorrect File Submitted"
+exit
+fi
 
-# Then, add here code to compile and run, and do any post-processing of the
-# tests
+cp student-submission/ListExamples.java grading-area
+cp TestListExamples.java grading-area
+
+cd grading-area/
+javac -cp .:../lib/hamcrest-core-1.3.jar:../lib/junit-4.13.2.jar *.java
+
+if test $? -eq 0; then
+echo "Successful Compile"
+echo ""
+else
+echo "Unsuccessful Compile"
+exit
+fi
+
+java -cp .:../lib/hamcrest-core-1.3.jar:../lib/junit-4.13.2.jar org.junit.runner.JUnitCore TestListExamples > results.txt
+
+#This part needs fixing (not completed)
+if echo "OK (1 test)" | grep "OK (1 test)" results.txt; then
+echo "You passed!"
+else
+echo "You Failed!"
+fi
